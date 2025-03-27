@@ -62,7 +62,8 @@ import csv
 store_template = {
     "items_sold": 0,
     "transactions": 0,
-    "revenue" : 0
+    "revenue" : 0,
+    "Avg items sold per day" : 0
 }
 
 stores = {
@@ -89,12 +90,17 @@ with open('store_sales.csv', 'r', newline='') as file:
         stores[curstore]["items_sold"] += int(line[2])
         stores[curstore]["revenue"] += float(line[3])
         stores[curstore]["revenue"] = round(stores[curstore]["revenue"],2)
+        
         # finctions
 
         lines += 1
+        stores[curstore]["transactions"] += 1
+        if stores[curstore]["transactions"] > 0:
+            stores[curstore]["Avg items sold per day"] = stores[curstore].get('items_sold') // stores[curstore]["transactions"]
+
         #print(lines, line[0], line[1], line[2], line[3])
     print(f"Total number of items sold: {sum_of_items}")
-    print(f"Total number of transactions: {lines}")
+    print(f"Total number of transactions: {lines-1}")
     print(f"The total revenue: {sum_of_revenue:.2f} ")
     print("\nStores Stats")
     [print(f"{key}: {Value}") for key,Value in stores.items()]
