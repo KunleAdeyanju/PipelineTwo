@@ -63,7 +63,9 @@ store_template = {
     "items_sold": 0,
     "transactions": 0,
     "revenue" : 0,
-    "Avg items sold per day" : 0
+    "Avg items sold per day" : 0,
+    "Max Daily Revenue" : 0,
+    "Min Daily Revenue" : 0
 }
 
 stores = {
@@ -77,6 +79,9 @@ with open('store_sales.csv', 'r', newline='') as file:
     sum_of_items = 0
     sum_of_revenue = 0 
     lines = 0
+    daily_revenue_data = {}  # Store daily revenue for each store
+    
+
     for line in csv_reader:
         #print(line)
         if lines == 0:
@@ -85,23 +90,43 @@ with open('store_sales.csv', 'r', newline='') as file:
         sum_of_items += int(line[2])
         sum_of_revenue += float(line[3])
         curstore = line[1]
+        
+        x = float(line[3])
+        y = float(line[3])
         if stores.get(curstore) == None:
             stores[curstore] = store_template.copy()
+
         stores[curstore]["items_sold"] += int(line[2])
         stores[curstore]["revenue"] += float(line[3])
         stores[curstore]["revenue"] = round(stores[curstore]["revenue"],2)
-        
-        # finctions
+
+        if stores[curstore]["Min Daily Revenue"] is None or y < stores[curstore]["Min Daily Revenue"] or stores[curstore]["Min Daily Revenue"] == 0 :
+            stores[curstore]["Min Daily Revenue"] = y
+        elif stores[curstore]["Max Daily Revenue"] is None or x > stores[curstore]["Max Daily Revenue"]:
+            stores[curstore]["Max Daily Revenue"] = x
 
         lines += 1
         stores[curstore]["transactions"] += 1
+
         if stores[curstore]["transactions"] > 0:
             stores[curstore]["Avg items sold per day"] = stores[curstore].get('items_sold') // stores[curstore]["transactions"]
-
+        
+    
         #print(lines, line[0], line[1], line[2], line[3])
     print(f"Total number of items sold: {sum_of_items}")
     print(f"Total number of transactions: {lines-1}")
     print(f"The total revenue: {sum_of_revenue:.2f} ")
     print("\nStores Stats")
     [print(f"{key}: {Value}") for key,Value in stores.items()]
+    # print(csv_reader)
     
+
+
+     
+        #y = stores[curstore]["Max Daily Revenue"]
+        # if x < stores[curstore]["Max Daily Revenue"]:
+        #stores[curstore]["Max Daily Revenue"] = max(stores[curstore]["Max Daily Revenue"], key = stores[curstore]["Max Daily Revenue"].get) 
+
+        # for revenue in csv_reader[4]:
+        #     if revenue > stores[curstore]["Max Daily Revenue"]:
+        #         stores[curstore]["Max Daily Revenue"] = revenue
